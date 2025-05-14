@@ -23,13 +23,26 @@ def buildMenu(names, values, calories):
     values and calories: lists of numbers.
     return: list of Foods.
     """
-
     menu = []
-
     for i in range(len(values)):
         menu.append(Food(names[i], values[i], calories[i]))
-
     return menu
+
+def greedy(items, maxCost, keyFunction):
+    """
+    Assumes items a list, maxCost >= 0,
+    keyFunction maps elements of items to numbers
+    """
+    itemsCopy = sorted(items, key=keyFunction, reverse=True)
+    result = []
+    totalValue, totalCost = 0.0, 0.0
+
+    for i in range(len(itemsCopy)):
+        if (totalValue + itemsCopy[i].getCost()) <= maxCost:
+            result.append(itemsCopy[i])
+            totalCost += itemsCopy[i].getCost()
+            totalValue += itemsCopy[i].getValue()
+    return (result, totalValue)
 
 
 names = ["donut", "apple", "cake"]
