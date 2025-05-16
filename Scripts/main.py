@@ -31,22 +31,40 @@ def buildMenu(names, values, calories):
 def greedy(items, maxCost, keyFunction):
     """
     Assumes items a list, maxCost >= 0,
-    keyFunction maps elements of items to numbers
+    keyFunction maps elements of items to numbers (sorts elements from best to worst, independently of the
+    definition of "best" and "worst")
     """
     itemsCopy = sorted(items, key=keyFunction, reverse=True)
     result = []
     totalValue, totalCost = 0.0, 0.0
 
-    for i in range(len(itemsCopy)):
+    for i in range(len(itemsCopy)):  # iterate over each item
         if (totalValue + itemsCopy[i].getCost()) <= maxCost:
             result.append(itemsCopy[i])
             totalCost += itemsCopy[i].getCost()
             totalValue += itemsCopy[i].getValue()
     return (result, totalValue)
 
-
 names = ["donut", "apple", "cake"]
 values = [5, 10, 15]
 calories = [300, 50, 3000]
 
-m = buildMenu(names, values, calories)
+foods = buildMenu(names, values, calories)
+
+
+def testGreedy(items, constraint, keyFunction):
+    taken, val = greedy(items, constraint, keyFunction)
+    print("Total value of items taken =", val)
+    for item in taken:
+        print(" ", item)
+
+def testGreedys(foods, maxUnits):
+    print("use greedy by value to allocate", maxUnits, "calories")
+    testGreedy(foods, maxUnits, Food.getValue)
+    print("use greedy by cost to allocate", maxUnits, "calories")
+    testGreedy(foods, maxUnits, lambda x: 1/Food.getCost(x))
+    print("use greedy by density to allocate", maxUnits, "calories")
+    testGreedy(foods, maxUnits, Food.density)
+
+
+testGreedys(foods, 400)
